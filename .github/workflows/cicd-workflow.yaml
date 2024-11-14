@@ -1,0 +1,34 @@
+name: CICD
+
+on:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build docker image
+        working-directory: . # Çalışma dizinini belirtilen klasöre ayarla
+        run: docker build -t berkay1532/wisper:latest .
+
+      - name: Publish image to docker hub
+        run: docker push berkay1532/wisper:latest
+
+  deploy:
+    needs: build
+    runs-on: aws-ec2
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull berkay1532/wisper:latest
+
+      - name: Delete old container
+        run: docker rm -f wisper-container || true
+
+      - name: Run docker container
+        run: docker run -d -p 5000:5000 --name wisper-container berkay1532/wisper
