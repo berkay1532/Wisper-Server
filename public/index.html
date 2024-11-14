@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Private Chat</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Chat Information -->
+    <div id="chatInfo" class="chat-info">
+      <p id="publicKeyDisplay"></p>
+      <button id="chatIdCopy"><p id="chatIdDisplay"></p></button>
+      <p id="receiverStatus"></p>
+    </div>
+    <div id="chat"></div>
+
+    <div id="typing"></div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <div class="close-button-container">
+          <span class="close-button" id="closeModal">&times;</span>
+        </div>
+        <h2>Join or Create Chat</h2>
+
+        <!-- Public Key -->
+        <label for="pubkey">
+          <span>Your Public Key:</span>
+          <input
+            type="text"
+            id="pubkey"
+            required
+            placeholder="Enter your Public Key"
+          />
+        </label>
+
+        <!-- Chat Options -->
+        <div id="chatOptions">
+          <button id="joinChatButton">Join Chat</button>
+          <button id="createChatButton">Create Chat</button>
+        </div>
+
+        <!-- Join Chat Section -->
+        <div id="joinChatSection" style="display: none">
+          <label for="chatId">
+            <span>Chat ID:</span>
+            <input
+              type="text"
+              id="chatId"
+              required
+              placeholder="Enter Chat ID"
+            />
+          </label>
+          <button id="confirmJoinButton">Join Chat</button>
+        </div>
+
+        <!-- Create Chat Section -->
+        <div id="createChatSection" style="display: none">
+          <label for="receiverPubkey">
+            <span>Receiver Public Key:</span>
+            <input
+              type="text"
+              id="receiverPubkey"
+              required
+              placeholder="Enter receiver's Public Key"
+            />
+          </label>
+          <button id="confirmCreateButton">Create Chat</button>
+        </div>
+      </div>
+    </div>
+
+    <form id="message-form">
+      <input
+        type="text"
+        id="message"
+        placeholder="Type your message here..."
+        autocomplete="off"
+      />
+      <button type="submit">Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="chat.js"></script>
+  </body>
+</html>
