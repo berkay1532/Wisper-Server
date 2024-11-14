@@ -32,3 +32,16 @@ jobs:
 
       - name: Run docker container
         run: docker run -d -p 5000:5000 --name wisper-container berkay1532/wisper
+      - name: Check environment variables
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PORT: ${{ secrets.PORT }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
+          RABBIT_QUEUE: ${{ secrets.RABBIT_QUEUE }}
+          RABBIT_URL: ${{ secrets.RABBIT_URL }}
+        run: |
+          echo "JWT Secret: $JWT_SECRET"
+          echo "Port: $PORT"
+          echo "NODE_ENV: $NODE_ENV"
+          echo "RABBIT_QUEUE: $RABBIT_QUEUE"
+          echo "RABBIT_URL: $RABBIT_URL"
