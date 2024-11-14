@@ -14,7 +14,6 @@ jobs:
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build docker image
-        working-directory: . # Çalışma dizinini belirtilen klasöre ayarla
         run: docker build -t berkay1532/wisper:latest .
 
       - name: Publish image to docker hub
@@ -31,17 +30,14 @@ jobs:
         run: docker rm -f wisper-container || true
 
       - name: Run docker container
-        run: docker run -d -p ${{ secrets.PORT }}:${{ secrets.PORT }} --name wisper-container berkay1532/wisper
-      - name: Check environment variables
-        env:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          PORT: ${{ secrets.PORT }}
-          NODE_ENV: ${{ secrets.NODE_ENV }}
-          RABBIT_QUEUE: ${{ secrets.RABBIT_QUEUE }}
-          RABBIT_URL: ${{ secrets.RABBIT_URL }}
-        run: |
-          echo "JWT Secret: $JWT_SECRET"
-          echo "Port: $PORT"
-          echo "NODE_ENV: $NODE_ENV"
-          echo "RABBIT_QUEUE: $RABBIT_QUEUE"
-          echo "RABBIT_URL: $RABBIT_URL"
+        run: docker run -d \
+          -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
+          -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+          -e PORT=${{ secrets.PORT }} \
+          -e NODE_ENV=${{ secrets.NODE_ENV }} \
+          -e RABBIT_QUEUE=${{ secrets.RABBIT_QUEUE }} \
+          -e RABBIT_URL=${{ secrets.RABBIT_URL }} \
+          --name wisper-container berkay1532/wisper
+
+      - name: Verify container environment variables
+        run: docker exec wisper-container env
