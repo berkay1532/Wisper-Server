@@ -7,14 +7,11 @@ const streamMiddleware = require("./utils/stream");
 const config = require("config");
 const http = require("http");
 const bodyParser = require("body-parser");
-const setupSocket = require("./lib/socket");
 
 const app = express();
 const server = http.createServer(app);
 
 app.use(bodyParser.json());
-
-app.use(express.static("public"));
 
 //CORS Policy
 app.use((req, res, next) => {
@@ -30,13 +27,15 @@ app.use(compression());
 
 app.use(morgan("combined", { streamMiddleware }));
 
-// app.get("/", (req, res) => {
-//   res.status(200).send(`App service running`);
-// });
-
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/index.html");
+  res
+    .status(200)
+    .send(`App service running on port ${config.get("server.port")}`);
 });
+
+// app.get("/", (req, res) => {
+//   res.sendFile(__dirname + "/public/index.html");
+// });
 
 server.listen(config.get("server.port"), () => {
   logger.info("Server is running on :" + config.get("server.port"));
@@ -52,6 +51,6 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message, data: data });
 });
 
-setupSocket(server);
+const io = require("./lib/socket").init(server);
 
 module.exports = app;
